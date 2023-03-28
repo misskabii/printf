@@ -1,51 +1,50 @@
 #include "main.h"
 
 /**
- * _printf - formatted output conversion and print data.
- * @format: input string.
- *
- * Return: number of chars printed.
+ * _printf - prints formatted data to stdout
+ * @format: string that contains the format to print
+ * Return: number of characters written
  */
-
-int _printf(const char *format, ...)
+int _printf(char *format, ...)
 {
-	int i = 0, j = 0, buff_count = 0, prev_buff_count = 0;
-	char buffer[2000];
-	va_list arg;
-	call_t container[] = {
-		{'c', print_char}, {'s', print_str}, {'i', print_int}, {'d', print_int},
-		{'%', print_perc}, {'b', print_bin}, {'o', print_oct}, {'x', print_hex},
-		{'X', print_X}, {'u', print_uint}, {'R', print_R13}, {'r', print_rev},
-		{'\0', NULL}
-	};
+	int written = 0, (*print_fn)(char *, va_list);
+	char specifier[3];
+	va_list args;
 
-	if (!format)
+	if (format == NULL)
 		return (-1);
-	va_start(arg, format);
-	while (format && format[i] != '\0')
+	specifier[2] = '\0';
+	va_start(args, format);
+	_putchar(-1);
+	while (format[0])
 	{
-		if (format[i] == '%')
+		if (format[0] == '%')
 		{
-			i++, prev_buff_count = buff_count;
-			for (j = 0; container[j].t != '\0'; j++)
+			print_fn = get_print_fn(format);
+			if (print_fn)
 			{
-				if (format[i] == '\0')
-					break;
-				if (format[i] == container[j].t)
-				{
-					buff_count = container[j].f(buffer, arg, buff_count);
-					break;
-				}
+				specifier[0] = '%';
+				specifier[1] = format[1];
+				written += print_fn(specifier, args);
 			}
-			if (buff_count == prev_buff_count && format[i])
-				i--, buffer[buff_count] = format[i], buff_count++;
+			else if (format[1] != '\0')
+			{
+				written += _putchar('%');
+				written += _putchar(format[1]);
+			}
+			else
+			{
+				written += _putchar('%');
+				break;
+			}
+			format += 2;
 		}
 		else
-			buffer[buff_count] = format[i], buff_count++;
-		i++;
+		{
+			written += _putchar(format[0]);
+			format++;
+		}
 	}
-	va_end(arg);
-	buffer[buff_count] = '\0';
-	print_buff(buffer, buff_count);
-	return (buff_count);
+	_putchar(-2);
+	return (written);
 }
