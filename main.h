@@ -1,22 +1,44 @@
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef HOLBERTON_H
+#define HOLBERTON_H
 
-#include <stdio.h>
 #include <stdarg.h>
-#include <unistd.h>
-#include <limits.h>
+#include <stddef.h>
+#include <stdlib.h>
 
+/**
+ * struct print_method - structure containing specifier
+ * and corresponding print functions.
+ * @specifier: the location and method to translate data to characters.
+ * @fn: print function for specific type.
+ */
+typedef struct print_method
+{
+	char *specifier;
+	int (*fn)(char *format, va_list);
+} print_fn;
+
+int _abs(int number);
 int _putchar(char character);
-int printf_char(va_list args, int printed);
-int printf_string(va_list args, int printed);
-int printf_integer(va_list args, int printed);
-int selector(const char *format, va_list args, int printed);
-int printf_binary(unsigned int num, int printed);
-int _printf(const char *format, ...);
-int _x(unsigned int num, int printed, int uppercase);
-int printf_octal(unsigned int num, int printed);
-int printf_unsigned(unsigned int num, int printed);
-int printf_reverse(va_list args, int printed);
-int printf_pointer(va_list args, int printed);
+int _puts(char *string);
+int count_digits(int number);
+int print_char(char *format, va_list);
+int print_string(char *format, va_list);
+int print_percent(char *format, va_list);
+int _print_number(int number);
+int print_number(char *format, va_list);
+int print_binary(char *format, va_list);
+int print_octal(char *format, va_list);
+int print_hexlower(char *format, va_list);
+int print_hexUpper(char *format, va_list);
+int _print_unsign(unsigned int number);
+int print_unsign(char *format, va_list);
+int print_unprintable(char *format, va_list);
+int print_pointer(char *format, va_list);
+int print_reverse(char *format, va_list);
+int _print_rot13(char *string);
+int print_rot13(char *format, va_list);
+
+int (*get_print_fn(char *format))(char *format, va_list);
+int _printf(char *format, ...);
 
 #endif
