@@ -1,50 +1,34 @@
 #include "main.h"
 
 /**
- * _printf - prints formatted data to stdout
- * @format: string that contains the format to print
- * Return: number of characters written
+ * _printf - implementation of the inbuilt printf
+ * @format: the format specifier
+ * Return: the formated string
  */
-int _printf(char *format, ...)
+
+int _printf(const char *format, ...)
 {
-	int written = 0, (*print_fn)(char *, va_list);
-	char specifier[3];
+	int printed = 0;
+
 	va_list args;
 
-	if (format == NULL)
-		return (-1);
-	specifier[2] = '\0';
 	va_start(args, format);
-	_putchar(-1);
-	while (format[0])
+
+	while (*format != '\0')
 	{
-		if (format[0] == '%')
+		if (*format == '%')
 		{
-			print_fn = get_print_fn(format);
-			if (print_fn)
-			{
-				specifier[0] = '%';
-				specifier[1] = format[1];
-				written += print_fn(specifier, args);
-			}
-			else if (format[1] != '\0')
-			{
-				written += _putchar('%');
-				written += _putchar(format[1]);
-			}
-			else
-			{
-				written += _putchar('%');
-				break;
-			}
-			format += 2;
+			format++;
+			printed = selector(format, args, printed);
+			format++;
 		}
 		else
 		{
-			written += _putchar(format[0]);
+			_putchar(*format);
+			printed++;
 			format++;
 		}
 	}
-	_putchar(-2);
-	return (written);
+	va_end(args);
+	return (printed);
 }
